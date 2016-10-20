@@ -1,7 +1,15 @@
 package com.example.models;
 
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
+@Entity
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     private String username;
     private String password;
@@ -10,11 +18,47 @@ public class User {
 
     private boolean passwordSet;
 
-    public User(String username, String password, boolean isAdmin, boolean passwordSet) {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "privileged" ,
+            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="privilege_id", referencedColumnName="id")
+    )
+    public Set<Privilege> getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(Set<Privilege> privileges) {
+        this.privileges = privileges;
+    }
+
+    private Set<Privilege> privileges;
+
+    public User(){
+
+    }
+
+    public User(Long id, String username, String password, boolean isAdmin, boolean passwordSet) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
         this.passwordSet = passwordSet;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
