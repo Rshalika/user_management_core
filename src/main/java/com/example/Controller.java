@@ -3,6 +3,7 @@ package com.example;
 import com.example.bindings.PrivilegesBinding;
 import com.example.bindings.ResponseBinding;
 import com.example.bindings.PasswordChangeBinding;
+import com.example.bindings.UserCreationBinding;
 import com.example.models.Privilege;
 import com.example.models.User;
 import com.example.models.UserValidateBinding;
@@ -28,16 +29,32 @@ public class Controller {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Iterable<User>>  allUsers(){
+    public ResponseEntity<List<User>>  allUsers(){
 
-        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+        Iterable<User> all = userRepository.findAll();
+        List<User> users = new ArrayList<>();
+        for (User user :all){
+            user.setPrivileges(new ArrayList<>());
+            users.add(user);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
 
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public User[] create(){
+    public User create(@RequestBody UserCreationBinding binding){
+        User user = new User();
+        if(userRepository.findByUsername(binding.getUsername()).iterator().hasNext()){
+            return null;
+        }
+        user.setUsername(binding.getUsername());
+        user.setPassword(binding.getPassword());
+        user.setAdmin(false);
+        user.setPasswordSet(true);
+        user.setPrivileges(new ArrayList<>());
+        userRepository.save(user);
+        return user;
 
-        return null; //all
     }
 
     @RequestMapping(value = "{username}",method = RequestMethod.DELETE)
