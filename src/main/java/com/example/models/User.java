@@ -1,15 +1,19 @@
 package com.example.models;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.nashorn.internal.objects.Global;
+import jdk.nashorn.internal.parser.JSONParser;
+
 import javax.persistence.*;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+    private Long id;
 
     private String username;
     private String password;
@@ -18,26 +22,20 @@ public class User {
 
     private boolean passwordSet;
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    @ManyToMany
-    @JoinTable(
-            name = "privileged" ,
-            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name="privilege_id", referencedColumnName="id")
-    )
-    public Set<Privilege> getPrivileges() {
-        return privileges;
-    }
-
-    public void setPrivileges(Set<Privilege> privileges) {
-        this.privileges = privileges;
-    }
-
-    private Set<Privilege> privileges;
+//    public List<Privilege> getPrivileges() {
+//        return privileges;
+//    }
+//
+//    public void setPrivileges(List<Privilege> privileges) {
+//        this.privileges = privileges;
+//    }
+////    @ManyToMany
+////    @JoinTable(
+////            name = "privileged" ,
+////            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
+////            inverseJoinColumns = @JoinColumn(name="privilege_id", referencedColumnName="id")
+////    )
+    private String privileges;
 
     public User(){
 
@@ -51,8 +49,7 @@ public class User {
         this.passwordSet = passwordSet;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     public Long getId() {
         return id;
     }
@@ -91,5 +88,22 @@ public class User {
 
     public void setPasswordSet(boolean passwordSet) {
         this.passwordSet = passwordSet;
+    }
+
+    public void setPrivileges(List<Privilege> privileges) {
+
+        this.privileges = privileges.toString();
+    }
+
+    public List<Privilege> getPrivileges() {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Privilege[] privileges = objectMapper.readValue(this.privileges, Privilege[].class);
+            return Arrays.asList(privileges);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

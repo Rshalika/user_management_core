@@ -6,7 +6,8 @@ import javax.persistence.*;
 @Entity
 public class Privilege {
 
-
+    @Id
+    @GeneratedValue
     private long id;
 
     private String name;
@@ -17,8 +18,9 @@ public class Privilege {
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
+
+
     public long getId() {
         return id;
     }
