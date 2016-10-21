@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -109,6 +110,14 @@ public class Controller {
         Iterator<User> iterator = userRepository.findByUsername("admin").iterator();
         if (iterator.hasNext()){
             return ResponseEntity.ok().build();
+        }else {
+            User user = new User(0L,"admin","admin",true,false);
+            List<Privilege> privileges = new ArrayList<>();
+            privileges.add(new Privilege("add"));
+            privileges.add(new Privilege("remove"));
+            privileges.add(new Privilege("edit"));
+            user.setPrivileges(privileges);
+            userRepository.save(user);
         }
         return null;
     }

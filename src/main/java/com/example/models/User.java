@@ -1,10 +1,10 @@
 package com.example.models;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.nashorn.internal.objects.Global;
-import jdk.nashorn.internal.parser.JSONParser;
-
-import javax.persistence.*;
+import org.json.JSONArray;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -91,8 +91,12 @@ public class User {
     }
 
     public void setPrivileges(List<Privilege> privileges) {
+        JSONArray jsonArray = new JSONArray();
+        for (Privilege privilege:privileges) {
+            jsonArray.put(privilege.getName());
+        }
 
-        this.privileges = privileges.toString();
+        this.privileges = jsonArray.toString();
     }
 
     public List<Privilege> getPrivileges() {
