@@ -2,28 +2,21 @@ package com.example.bindings;
 
 
 import com.example.models.Privilege;
-import com.example.models.User;
 
 import java.util.List;
 
 public class PrivilegesBinding {
-    private User user;
+    private String username;
     private List<Privilege> privileges;
 
     public PrivilegesBinding(){}
 
-    public PrivilegesBinding(User user, List<Privilege> privileges) {
-        this.user = user;
+    public PrivilegesBinding(String username, List<Privilege> privileges) {
+        this.username = username;
+
         this.privileges = privileges;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public List<Privilege> getPrivileges() {
         return privileges;
@@ -31,5 +24,13 @@ public class PrivilegesBinding {
 
     public void setPrivileges(List<Privilege> privileges) {
         this.privileges = privileges;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

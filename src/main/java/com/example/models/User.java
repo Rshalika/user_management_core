@@ -2,6 +2,8 @@ package com.example.models;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,11 +24,11 @@ public class User {
 
     private boolean passwordSet;
 
-//    public List<Privilege> getPrivileges() {
+//    public List<Privilege> getPrivilegesF() {
 //        return privileges;
 //    }
 //
-//    public void setPrivileges(List<Privilege> privileges) {
+//    public void setPrivilegesF(List<Privilege> privileges) {
 //        this.privileges = privileges;
 //    }
 ////    @ManyToMany
@@ -90,24 +92,43 @@ public class User {
         this.passwordSet = passwordSet;
     }
 
-    public void setPrivileges(List<Privilege> privileges) {
+    public void setPrivilegesF(List<Privilege> privileges) {
+        if (privileges.size() == 0 ){
+            privileges.add(new Privilege("add",false));
+            privileges.add(new Privilege("edit",false));
+            privileges.add(new Privilege("delete",false));
+        }
         JSONArray jsonArray = new JSONArray();
         for (Privilege privilege:privileges) {
-            jsonArray.put(privilege.getName());
+            JSONObject put = new JSONObject().put("name",privilege.getName());
+            put.put("active",privilege.getActive());
+            jsonArray.put(put);
         }
 
         this.privileges = jsonArray.toString();
     }
 
-    public List<Privilege> getPrivileges() {
+    public List<Privilege> getPrivilegesF() {
 
+        return getPrivilegesFromTest(this.privileges);
+    }
+
+    public static List<Privilege> getPrivilegesFromTest(String privs) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Privilege[] privileges = objectMapper.readValue(this.privileges, Privilege[].class);
+            Privilege[] privileges = objectMapper.readValue(privs, Privilege[].class);
             return Arrays.asList(privileges);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(String privileges) {
+        this.privileges = privileges;
     }
 }

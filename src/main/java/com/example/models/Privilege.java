@@ -12,25 +12,29 @@ public class Privilege {
 
     private String name;
 
+    private boolean active;
+
     public Privilege(){}
 
-    public Privilege(String name) {
+    public Privilege(String name, boolean active) {
         this.name = name;
+        this.active = active;
     }
 
 
 
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setName(String name) {

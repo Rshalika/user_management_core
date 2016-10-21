@@ -34,7 +34,8 @@ public class Controller {
         Iterable<User> all = userRepository.findAll();
         List<User> users = new ArrayList<>();
         for (User user :all){
-            user.setPrivileges(new ArrayList<>());
+            String privileges = user.getPrivileges();
+            user.setPrivilegesF(User.getPrivilegesFromTest(privileges));
             users.add(user);
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -51,7 +52,7 @@ public class Controller {
         user.setPassword(binding.getPassword());
         user.setAdmin(false);
         user.setPasswordSet(true);
-        user.setPrivileges(new ArrayList<>());
+        user.setPrivilegesF(new ArrayList<>());
         userRepository.save(user);
         return user;
 
@@ -70,17 +71,24 @@ public class Controller {
     }
     @RequestMapping(value = "/privs", method = RequestMethod.POST)
     public ResponseEntity<Void> changePrivs(@RequestBody PrivilegesBinding binding){
-        String username = binding.getUser().getUsername();
+        String username = binding.getUsername();
         Iterator<User> iterator = userRepository.findByUsername(username).iterator();
         if (iterator.hasNext()){
             User user = iterator.next();
-            user.setPrivileges(binding.getPrivileges());
+
+            user.setPrivilegesF(binding.getPrivileges());
             userRepository.save(user);
             return ResponseEntity.ok().build();
         }
         return null; //all
     }
 
+    private boolean desideAtIndex(int index, List<Boolean> privileges ){
+        if(privileges.size()>= index){
+            return privileges.get(index);
+        }
+        return false;
+    }
     @RequestMapping(value = "/validate", method = RequestMethod.POST)
     public ResponseBinding validate(@RequestBody UserValidateBinding binding){
         Iterable<User> byUsername = userRepository.findByUsername(binding.getUsername());
@@ -116,7 +124,7 @@ public class Controller {
         Iterator<User> iterator = byUsername.iterator();
         if (iterator.hasNext()){
             User  user = iterator.next();
-            new ResponseEntity<>(user.getPrivileges(), HttpStatus.OK);
+            new ResponseEntity<>(user.getPrivilegesF(), HttpStatus.OK);
 
         }
         return null;
@@ -130,10 +138,10 @@ public class Controller {
         }else {
             User user = new User(0L,"admin","admin",true,false);
             List<Privilege> privileges = new ArrayList<>();
-            privileges.add(new Privilege("add"));
-            privileges.add(new Privilege("remove"));
-            privileges.add(new Privilege("edit"));
-            user.setPrivileges(privileges);
+            privileges.add(new Privilege("add", true));
+            privileges.add(new Privilege("remove", true));
+            privileges.add(new Privilege("edit", true));
+            user.setPrivilegesF(privileges);
             userRepository.save(user);
         }
         return null;
